@@ -163,6 +163,7 @@ def get_col_name(name, data_num1, data_num2):
     print("[+] 컬럼 문자열 쿼리 : " + get_data2.get('userid'))
     return data_str1, data_str2
 
+
 # 데이터 길이
 def get_get_data_len(col1, col2, name):
     for a in range(20):
